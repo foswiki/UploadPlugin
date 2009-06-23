@@ -1,0 +1,59 @@
+%META:TOPICINFO{author="ProjectContributor" date="1245773101" format="1.1" version="1.2"}%
+---+!! !UploadPlugin
+<!--
+One line description, required for extensions repository catalog.
+   * Set SHORTDESCRIPTION = Attach multiple files to a topic in one go
+-->
+%SHORTDESCRIPTION%
+
+This plugin provides a more flexible interface to upload one or more files
+to a topic. Using standard means, only one file can be uploaded at the same
+time. In comparison this plugin allows to upload multiple files with one
+transaction and optionally using an asynchronous request. 
+the needed REST interface to 
+
+%TOC%
+
+---++ Examples
+You type:
+<verbatim>%UPLOADFORM%</verbatim>
+
+You get (if installed):
+%ATTACHURL%/UploadPluginSnap1.png
+
+---++ Syntax
+<verbatim>%UPLOADFORM{
+  comment="on|off"
+  target="on|off"
+  multiple="on|off"
+  embed="on|off"
+}%</verbatim>
+
+The =comment=, =target=, =multiple=  and =embed= parameters toggle different features
+of the upload form:
+
+   * =comment= - switch on/off the comment field for uploads
+   * =target= - switch on/off the target field; defaults to current topic
+   * =multiple= - switch on/off multi-file upload
+   * =embed= - switching this to =on= will omit the outer form markup; that's useful
+     to _embed_ the upload form into a larger form, that the upload is part of
+
+
+---++ Installation Instructions
+%$INSTALL_INSTRUCTIONS%
+
+---++ Info
+
+Many thanks to the following sponsors for supporting this work:
+   * Acknowledge any sponsors here
+
+|  Author(s): | Foswiki:MichaelDaum|
+|  Copyright: | &copy; 2009 Michael Daum http://michaeldaumconsulting.com |
+|  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]] |
+|  Version: | 1.00 |
+|  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  23 Jun 2009: | initial release |
+|  Dependencies: | %$DEPENDENCIES% |
+|  Home page: | http://foswiki.org/Extensions/UploadPlugin |
+
+<!-- Do _not_ attempt to edit this topic; it is auto-generated. -->

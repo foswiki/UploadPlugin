@@ -1,0 +1,29 @@
+a:hover.add_button,
+a.add_button {
+ background-image: url("../FamFamFamSilkIcons/add.png");
+}
+a:hover.remove_button,
+a.remove_button {
+ background-image: url("../FamFamFamSilkIcons/delete.png");
+}
+a.remove_button,
+a.add_button,
+a:hover.remove_button,
+a:hover.add_button {
+ background-position:0% 50%;
+ background-repeat: no-repeat;
+ padding-left:20px;
+ text-decoration:none;
+ margin-right:0.5em;
+}
+.upload {
+  margin-bottom:1em;
+}
+.uploadForm th {
+  width:7em;
+}
+.msg .foswikiAlert,
+.msg .foswikiNotify,
+.msg .foswikiSuccess {
+  margin:15px 0px 0px 10px;
+}
