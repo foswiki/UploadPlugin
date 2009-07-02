@@ -1,6 +1,9 @@
 data/System/UploadPlugin.txt 0644
 lib/Foswiki/Plugins/UploadPlugin/Core.pm 0644
 lib/Foswiki/Plugins/UploadPlugin.pm 0644
+pub/System/UploadPlugin/Makefile 0644
 pub/System/UploadPlugin/upload.css 0644
+pub/System/UploadPlugin/upload.css.gz 0644
 pub/System/UploadPlugin/upload.js 0644
+pub/System/UploadPlugin/upload.js.gz 0644
 pub/System/UploadPlugin/UploadPluginSnap1.png 0644

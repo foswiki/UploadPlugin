@@ -14,7 +14,7 @@
   // extending jquery 
   $.fn.extend({
     uploader: function(options) {
-      var opts = $.extend({}, $.Uploader.defaults, options);
+      var opts = $.extend({}, $.Uploader.defaults, foswiki.UploadPlugin, options);
       return this.each(function() {
         new $.Uploader(this, opts);
       });
@@ -49,38 +49,44 @@
     var oldBackground;
     var $buttonIcon;
 
-    self.form.ajaxForm({
-        dataType: 'html',
-        beforeSubmit: function(data, form, options) {
-          if (typeof(foswikiStrikeOne) != 'undefined') {
-            foswikiStrikeOne(form[0]);
+    if (typeof(self.form.ajaxForm) != 'undefined') {
+      self.form.ajaxForm({
+          dataType: 'html',
+          beforeSubmit: function(data, form, options) {
+            if (typeof(foswikiStrikeOne) != 'undefined') {
+              foswikiStrikeOne(form[0]);
+            }
+            // add notification and spinner
+            $buttonIcon = self.form.find('.foswikiFormLast .jqButtonIcon');
+            oldBackground = $buttonIcon.css('background-image');
+            $buttonIcon.css('background-image', 'url('+foswiki.pubUrlPath+'/'+foswiki.systemWebName+'/JQueryPlugin/plugins/spinner/spinner.gif)');
+            self.form.find(".msg").empty();
+          },
+          success: function(data, status) {
+            // restore old icon and notify
+            $buttonIcon.css('background-image', oldBackground);
+            if (data) { // any data is an error message
+              self.handleError('Alert', "Error: "+data);
+            } else {
+              self.handleError('Success', 'done');
+              self.resetFields();
+              if (typeof(self.opts.onsuccess) == 'function') {
+                self.opts.onsuccess.call(this, self);
+              }
+              self.container.trigger("success.uploader");
+            }
+          },
+          error: function(xhr, status) {
+            // restore old icon and warn
+            $buttonIcon.css('background-image', oldBackground);
+            self.handleError('Alert', "Error: "+xhr.responseText);
+            self.container.trigger("error.uploader");
+            if (typeof(self.opts.onerror) == 'function') {
+              self.opts.onerror.call(this, self);
+            }
           }
-          // add notification and spinner
-          $buttonIcon = self.form.find('.foswikiFormLast .jqButtonIcon');
-          oldBackground = $buttonIcon.css('background-image');
-          $buttonIcon.css('background-image', 'url('+foswiki.pubUrlPath+'/'+foswiki.systemWebName+'/JQueryPlugin/plugins/spinner/spinner.gif)');
-          self.form.find(".msg").empty();
-        },
-        success: function(data, status) {
-          // restore old icon and notify
-          $buttonIcon.css('background-image', oldBackground);
-          if (data) { // any data is an error message
-            self.handleError('Alert', "Error: "+data);
-          } else {
-            self.handleError('Success', 'done');
-            self.resetFields();
-          }
-        },
-        error: function(xhr, status) {
-          // restore old icon and warn
-          $buttonIcon.css('background-image', oldBackground);
-          self.handleError('Alert', "Error: "+xhr.responseText);
-        }
-    });
-  };
-
-  // default settings ****************************************************
-  $.Uploader.defaults = {
+      });
+    }
   };
 
   // add a field to the form *********************************************
@@ -117,10 +123,19 @@
     var self = this;
     self.container.find(".msg").html("<div class='foswiki"+type+"'>"+msg+"</div>");
   };
+ 
+  // default settings ****************************************************
+  $.Uploader.defaults = {
+    /*
+    onsuccess: function () {},
+    onerror: function () {}
+    */
+  };
+
 
   // initialisation
   $(function() {
-    $(".uploader").uploader();
+    $(".jqUploader").uploader();
   });
 
 })(jQuery);

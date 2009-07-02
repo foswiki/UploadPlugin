@@ -22,7 +22,7 @@ use Error qw( :try );
 
 use vars qw($baseWeb $baseTopic);
 
-use constant DEBUG => 0; # toggle me
+use constant DEBUG => 1; # toggle me
 
 ###############################################################################
 sub writeDebug {
@@ -43,18 +43,34 @@ sub handleUploadForm {
   my $target = $params->{target} || 'on';
   my $multiple = $params->{multi} || 'on';
   my $embed = $params->{embed} || 'off';
+  my $ajax = $params->{ajax} || 'off';
+
+  my @metas;
+  foreach my $key ('onsuccess', 'onerror') {
+    my $val = $params->{$key};
+    next unless $val;
+    $val = "function(uploader) { $val }" unless $val =~ /^function/;
+    push @metas, "<meta name=\"foswiki.UploadPlugin.$key\" content=\"$val\">";
+  }
+  if (@metas) {
+    my $header = join("\n", @metas);
+    Foswiki::Func::addToHEAD('UPLOADPLUGIN::METADATA', "\n".$header, 'JQUERYPLUGIN');
+  }
 
   my $context = Foswiki::Func::getContext();
   $context->{'UploadPlugin_comments'} = 1 if $comment eq 'on';
   $context->{'UploadPlugin_target'} = 1 if $target eq 'on';
   $context->{'UploadPlugin_multiple'} = 1 if $multiple eq 'on';
   $context->{'UploadPlugin_embed'} = 1 if $embed eq 'on';
+  $context->{'UploadPlugin_ajax'} = 1 if $ajax eq 'on';
 
   my $result = Foswiki::Func::expandTemplate('uploadform');
 
   undef $context->{'UploadPlugin_comments'};
   undef $context->{'UploadPlugin_target'};
   undef $context->{'UploadPlugin_multiple'};
+  undef $context->{'UploadPlugin_embed'};
+  undef $context->{'UploadPlugin_ajax'};
 
   return $result;
 }
@@ -66,6 +82,7 @@ sub handleRestUpload {
   my $query = Foswiki::Func::getCgiQuery();
   my $uploads = $query->uploads();
   my $topic = $query->param('topic');
+  my $useAjax = $query->param('useajax') || 'off';
   my $web;
 
   if ( $query && $query->method() && uc($query->method()) ne 'POST') {
@@ -77,7 +94,18 @@ sub handleRestUpload {
 
   unless (Foswiki::Func::checkAccessPermission(
     'CHANGE', Foswiki::Func::getWikiName(), undef, $topic, $web)) {
-    returnRESTResult($response, 401, "Access denied");
+    if ($useAjax eq 'on') {
+      returnRESTResult($response, 403, "Access denied");
+    } else {
+      throw Foswiki::OopsException(
+        'accessdenied',
+        status => 403,
+        def    => 'topic_access',
+        web    => $web,
+        topic  => $topic,
+        params => [ 'CHANGE', 'Access denied' ]
+      );
+    }
     return;
   }
 
@@ -107,18 +135,38 @@ sub handleRestUpload {
     }
 
     unless ($fileSize && $fileName) {
-      returnRESTResult($response, 500, "Zero-sized file upload of '$fileName'");
+      if ($useAjax eq 'on') {
+        returnRESTResult($response, 500, "Zero-sized file upload of '$fileName'");
+      } else {
+        throw Foswiki::OopsException(
+          'attention',
+          def    => 'zero_size_upload',
+          web    => $web,
+          topic  => $topic,
+          params => [ ( $fileName || '""' ) ]
+        );
+      }
       close($stream) if $stream;
       return; 
     }
 
     if ($maxSize && $fileSize > $maxSize * 1024) {
-      returnRESTResult($response, 500, "Oversized upload of '$fileName'");
+      if ($useAjax eq 'on') {
+        returnRESTResult($response, 500, "Oversized upload of '$fileName'");
+      } else {
+        throw Foswiki::OopsException(
+          'attention',
+          def    => 'oversized_upload',
+          web    => $web,
+          topic  => $topic,
+          params => [ $fileName, $maxSize ]
+        );
+      }
       close($stream) if $stream;
       return;
     }
 
-    writeDebug("fileName=$fileName, origName=$origName, tmpFileName=$tmpFileName ");
+    writeDebug("useAjax=$useAjax, fileName=$fileName, origName=$origName, tmpFileName=$tmpFileName ");
 
     my $info = $upload->uploadInfo;
     if (DEBUG) {
@@ -164,8 +212,18 @@ sub handleRestUpload {
     };
 
     if ($error) {
-      returnRESTResult($response, 500, $error);
       close($stream) if $stream;
+      if ($useAjax eq 'on') {
+        returnRESTResult($response, 500, $error);
+      } else {
+        throw Foswiki::OopsException(
+          'attention',
+          def    => 'save_error',
+          web    => $web,
+          topic  => $topic,
+          params => [ $error ]
+        );
+      }
       return;
     }
 
@@ -173,12 +231,29 @@ sub handleRestUpload {
   }
 
   unless ($found) {
-    returnRESTResult($response, 500, "Zero-sized file upload");
+    if ($useAjax eq 'on') {
+      returnRESTResult($response, 500, "Zero-sized file upload");
+    } else {
+      throw Foswiki::OopsException(
+        'attention',
+        def    => 'zero_size_upload',
+        web    => $web,
+        topic  => $topic,
+        params => [ '""' ]
+      );
+    }
   }
-  $response->header(
-    -status  => 200,
-    -type    => 'text/html',
-  );
+
+  if ($useAjax eq 'on') {
+    $response->header(
+      -status  => 200,
+      -type    => 'text/html',
+    );
+  } else {
+    my $url = Foswiki::Func::getViewUrl($web, $topic);
+    Foswiki::Func::redirectCgiQuery($query, $url);
+  }
+
   return;
 }
 

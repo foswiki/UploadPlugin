@@ -18,7 +18,7 @@ package Foswiki::Plugins::UploadPlugin;
 use strict;
 
 our $VERSION = '$Rev: 1340 $';
-our $RELEASE = '1.00';
+our $RELEASE = '1.10';
 our $SHORTDESCRIPTION = 'Attach multiple files to a topic in one go';
 our $NO_PREFS_IN_TOPIC = 1;
 our $doneInit;

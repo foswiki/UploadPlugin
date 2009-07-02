@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" date="1245773101" format="1.1" version="1.2"}%
+%META:TOPICINFO{author="ProjectContributor" date="1245774226" format="1.1" reprev="1.2" version="1.2"}%
 ---+!! !UploadPlugin
 <!--
 One line description, required for extensions repository catalog.
@@ -19,10 +19,12 @@ You type:
 <verbatim>%UPLOADFORM%</verbatim>
 
 You get (if installed):
+
 %ATTACHURL%/UploadPluginSnap1.png
 
 ---++ Syntax
 <verbatim>%UPLOADFORM{
+  ajax="on|off"
   comment="on|off"
   target="on|off"
   multiple="on|off"
@@ -32,12 +34,14 @@ You get (if installed):
 The =comment=, =target=, =multiple=  and =embed= parameters toggle different features
 of the upload form:
 
+   * =ajax= - switch on/off asynchronous operation mode; defaults to off
    * =comment= - switch on/off the comment field for uploads
    * =target= - switch on/off the target field; defaults to current topic
    * =multiple= - switch on/off multi-file upload
    * =embed= - switching this to =on= will omit the outer form markup; that's useful
      to _embed_ the upload form into a larger form, that the upload is part of
-
+   * =onsuccess= - function to be called after a sucessful upload; aditionally, the javascript event =sucess.uploader= is fired on success
+   * =onerror= - function to be called after a failed upload; the javascript event =error.uploader= is fired when an error occurs
 
 ---++ Installation Instructions
 %$INSTALL_INSTRUCTIONS%
@@ -50,10 +54,14 @@ Many thanks to the following sponsors for supporting this work:
 |  Author(s): | Foswiki:MichaelDaum|
 |  Copyright: | &copy; 2009 Michael Daum http://michaeldaumconsulting.com |
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]] |
-|  Version: | 1.00 |
+|  Release: | %$RELEASE% |
+|  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  02 Jul 2009: | added =ajax= parameter; triggering sucess and error events jquery events |
+|  30 Jun 2009: | added =onsuccess=, =onerror= |
 |  23 Jun 2009: | initial release |
 |  Dependencies: | %$DEPENDENCIES% |
-|  Home page: | http://foswiki.org/Extensions/UploadPlugin |
+|  Home: | Foswiki:Extensions/UploadPlugin |
+|  Support: | Foswiki:Support/UploadPlugin |
 
 <!-- Do _not_ attempt to edit this topic; it is auto-generated. -->
