@@ -7,3 +7,4 @@ pub/System/UploadPlugin/upload.css.gz 0644
 pub/System/UploadPlugin/upload.js 0644
 pub/System/UploadPlugin/upload.js.gz 0644
 pub/System/UploadPlugin/UploadPluginSnap1.png 0644
+templates/uploadplugin.tmpl 0644
