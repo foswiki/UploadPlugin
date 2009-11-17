@@ -1,0 +1,103 @@
+%TMPL:DEF{"uploadform"}%<!-- uploadform -->
+%TMPL:P{context="UploadPlugin_embed" else="formstart"}%<!-- formstart// -->
+%TMPL:P{"targetstep"}%<!-- targetstep// -->
+%TMPL:P{"filesstep"}%<!-- filesstep// -->
+%TMPL:P{context="UploadPlugin_submit" then="submitstep"}%<!-- submitstep// -->
+%TMPL:P{"uploadjavascript"}%<!-- uploadjavascript// -->
+%TMPL:P{context="UploadPlugin_ajax" then="upload_ajax" else="upload_classic"}%<!-- uploadajax // -->
+%TMPL:P{context="UploadPlugin_embed" else="formend"}%<!-- formend// -->
+%TMPL:P{"uploadcss"}%<!-- uploadcss// -->
+<!-- //uploadform -->%TMPL:END%
+
+%TMPL:DEF{"formstart"}%<!-- formstart -->
+<div class="foswikiFormSteps jqUploader">
+  <form name="upload" enctype="multipart/form-data" action="%SCRIPTURLPATH{"rest"}%/UploadPlugin/upload" method="post">
+    <h2 >Upload files</h2>
+<!-- //formend -->%TMPL:END%
+
+%TMPL:DEF{"formend"}%<!-- formend -->
+  </form>
+</div>
+<!-- //formend -->%TMPL:END%
+
+%TMPL:DEF{"filesstep"}%<!-- filesstep -->
+<div class="foswikiFormStep">
+  <div class="uploadContainer">
+    %TMPL:P{context="UploadPlugin_comments" then="uploadtable_comments" else="uploadtable_nocomments"}%<!-- uploadtable// -->
+  </div>
+  %TMPL:P{context="UploadPlugin_multiple" then="addremovebuttons"}%<!-- addremovebuttons// -->
+</div>
+<!-- //filesstep -->%TMPL:END%
+
+%TMPL:DEF{"uploadtable_comments"}%<!-- uploadtable -->
+<table class="foswikiLayoutTable upload">
+  <tr>
+    <th>File:</th>
+    <td><input class="foswikiFileUpload" type="file" name="filepath1" size="30" /></td>
+  </tr>
+  <tr>
+    <th>Comment:</th>
+    <td><input class="foswikiInputField" type="text" name="filecomment1" size="30" /></td>
+  </tr>
+</table>
+<!-- //uploadtable -->%TMPL:END%
+
+%TMPL:DEF{"uploadtable_nocomments"}%<!-- uploadtable -->
+<table class="foswikiLayoutTable upload">
+  <tr>
+    <th>File:</th>
+    <td><input class="foswikiFileUpload" type="file" name="filepath1" size="30" /></td>
+  </tr>
+</table>
+<!-- //uploadtable -->%TMPL:END%
+
+
+%TMPL:DEF{"addremovebuttons"}%<!-- addremovebuttons -->
+  <div class="button_box">
+    <a href="#" class="add_button">
+      more
+    </a>
+    <a href="#" class="remove_button">
+      less
+    </a>
+  </div>
+<!-- //addremovebuttons -->%TMPL:END%
+
+%TMPL:DEF{"targetstep"}%%TMPL:P{context="UploadPlugin_target" then="upload_target" else="upload_notarget"}%%TMPL:END%
+
+%TMPL:DEF{"upload_target"}%<!-- upload_target -->
+<div class="foswikiFormStep">
+<table class="foswikiLayoutTable">
+  <tr>
+    <th >Target topic:</th>
+    <td><input type="text" name="topic" size="50" value="%URLPARAM{"filetopic" default="%BASEWEB%.%BASETOPIC%"}%" /></td>
+  </tr>
+</table>
+<hr />
+</div>
+<!-- //upload_target-->%TMPL:END%
+
+%TMPL:DEF{"upload_notarget"}%<input type="hidden" name="topic" value="%BASEWEB%.%BASETOPIC%" />%TMPL:END%
+
+%TMPL:DEF{"submitstep"}%<!-- submitstep -->
+<div class="foswikiFormStep foswikiFormButtons foswikiFormLast">
+<hr />
+  %BUTTON{"%MAKETEXT{"Upload"}%" icon="attach" type="submit"}%
+  <literal> <div class="msg"></div> </literal>
+  %CLEAR%
+</div>
+<!-- //submitstep -->%TMPL:END%
+
+%TMPL:DEF{"upload_ajax"}%<input type="hidden" name="useajax" value="on" />%JQREQUIRE{"form"}%%TMPL:END%
+%TMPL:DEF{"upload_classic"}%<input type="hidden" name="useajax" value="off" />%TMPL:END%
+
+%TMPL:DEF{"uploadjavascript"}%%ADDTOHEAD{
+  "UPLOADPLUGIN::JAVASCRIPT"
+  text="<script type='text/javascript' src='%PUBURLPATH%/%SYSTEMWEB%/UploadPlugin/upload.js'></script>"
+  requires="JQUERYPLUGIN::FOSWIKI, UPLOADPLUGIN::CSS"
+}%%TMPL:END%
+%TMPL:DEF{"uploadcss"}%%ADDTOHEAD{
+  "UPLOADPLUGIN::CSS"
+  text="<style type='text/css'>@import url('%PUBURLPATH%/%SYSTEMWEB%/UploadPlugin/upload.css');</style>"
+  requires="JQUERYPLUGIN::FOSWIKI"
+}%%TMPL:END%

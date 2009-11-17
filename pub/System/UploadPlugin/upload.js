@@ -26,8 +26,8 @@
     var self = this;
     self.container = $(elem);
     self.form = self.container.find("form:first");
-    $.log("creating new  uploader for ");
-    self.container.debug();
+    //$.log("creating new  uploader for ");
+    //self.container.debug();
    
     // build element specific options. 
     // note you may want to install the Metadata plugin
@@ -92,7 +92,7 @@
   // add a field to the form *********************************************
   $.Uploader.prototype.addField = function() {
     var self = this;
-    $.log("called uploader::addField");
+    //$.log("called uploader::addField");
     var lastId = self.container.find(".upload:last input[type=file]").attr('name').replace(/[^0-9]/g, '');
     lastId++;
     var elem = self.container.find(".upload:first");
@@ -105,7 +105,7 @@
   // remove a field to the form *****************************************
   $.Uploader.prototype.removeField = function() {
     var self = this;
-    $.log("called removeField");
+    //$.log("called removeField");
     if (self.container.find(".upload").length > 1) {
       return self.container.find(".upload:last").slideUp(400, function() {$(this).remove();});
     }

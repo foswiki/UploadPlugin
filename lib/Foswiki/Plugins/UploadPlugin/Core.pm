@@ -16,13 +16,14 @@
 package Foswiki::Plugins::UploadPlugin::Core;
 
 use strict;
-require Foswiki::Func;    # The plugins API
-require Foswiki::Sandbox;
+use Foswiki::Func ();    # The plugins API
+use Foswiki::Sandbox ();
+use Foswiki::OopsException ();
 use Error qw( :try );
 
 use vars qw($baseWeb $baseTopic);
 
-use constant DEBUG => 1; # toggle me
+use constant DEBUG => 0; # toggle me
 
 ###############################################################################
 sub writeDebug {
@@ -41,6 +42,7 @@ sub handleUploadForm {
   my $template = Foswiki::Func::readTemplate('uploadplugin');
   my $comment = $params->{comment} || 'on';
   my $target = $params->{target} || 'on';
+  my $submit = $params->{submit} || 'on';
   my $multiple = $params->{multi} || 'on';
   my $embed = $params->{embed} || 'off';
   my $ajax = $params->{ajax} || 'off';
@@ -60,6 +62,7 @@ sub handleUploadForm {
   my $context = Foswiki::Func::getContext();
   $context->{'UploadPlugin_comments'} = 1 if $comment eq 'on';
   $context->{'UploadPlugin_target'} = 1 if $target eq 'on';
+  $context->{'UploadPlugin_submit'} = 1 if $submit eq 'on';
   $context->{'UploadPlugin_multiple'} = 1 if $multiple eq 'on';
   $context->{'UploadPlugin_embed'} = 1 if $embed eq 'on';
   $context->{'UploadPlugin_ajax'} = 1 if $ajax eq 'on';
@@ -68,6 +71,7 @@ sub handleUploadForm {
 
   undef $context->{'UploadPlugin_comments'};
   undef $context->{'UploadPlugin_target'};
+  undef $context->{'UploadPlugin_submit'};
   undef $context->{'UploadPlugin_multiple'};
   undef $context->{'UploadPlugin_embed'};
   undef $context->{'UploadPlugin_ajax'};
