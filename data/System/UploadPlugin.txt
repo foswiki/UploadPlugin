@@ -10,7 +10,6 @@ This plugin provides a more flexible interface to upload one or more files
 to a topic. Using standard means, only one file can be uploaded at the same
 time. In comparison this plugin allows to upload multiple files with one
 transaction and optionally using an asynchronous request. 
-the needed REST interface to 
 
 %TOC%
 
@@ -18,7 +17,7 @@ the needed REST interface to
 You type:
 <verbatim>%UPLOADFORM%</verbatim>
 
-You get (if installed):
+You get (screenshot):
 
 %ATTACHURL%/UploadPluginSnap1.png
 
