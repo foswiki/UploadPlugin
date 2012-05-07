@@ -1,5 +1,5 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
-#
+# 
 # Copyright (C) 2009 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
@@ -17,9 +17,9 @@ package Foswiki::Plugins::UploadPlugin;
 
 use strict;
 
-our $VERSION           = '$Rev: 1340 $';
-our $RELEASE           = '1.11';
-our $SHORTDESCRIPTION  = 'Attach multiple files to a topic in one go';
+our $VERSION = '$Rev: 1340 $';
+our $RELEASE = '1.11';
+our $SHORTDESCRIPTION = 'Attach multiple files to a topic in one go';
 our $NO_PREFS_IN_TOPIC = 1;
 our $doneInit;
 our $baseWeb;
@@ -27,45 +27,44 @@ our $baseTopic;
 
 ##############################################################################
 sub initPlugin {
-    ( $baseTopic, $baseWeb ) = @_;
+  ($baseTopic, $baseWeb) = @_;
 
-    Foswiki::Func::registerTagHandler( 'UPLOADFORM', \&handleUploadForm );
-    Foswiki::Func::registerRESTHandler( 'upload', \&handleRestUpload );
+  Foswiki::Func::registerTagHandler('UPLOADFORM', \&handleUploadForm);
+  Foswiki::Func::registerRESTHandler('upload', \&handleRestUpload);
 
-    $doneInit = 0;
-    return 1;
+  $doneInit = 0;
+  return 1;
 }
 
 ###############################################################################
 sub init {
-    return if $doneInit;
-    $doneInit = 1;
-    require Foswiki::Plugins::UploadPlugin::Core;
-    Foswiki::Plugins::UploadPlugin::Core::init( $baseWeb, $baseTopic );
+  return if $doneInit;
+  $doneInit = 1;
+  require Foswiki::Plugins::UploadPlugin::Core;
+  Foswiki::Plugins::UploadPlugin::Core::init($baseWeb, $baseTopic);
 }
 
 ##############################################################################
 sub handleUploadForm {
-    init();
-    Foswiki::Plugins::UploadPlugin::Core::handleUploadForm(@_);
+  init();
+  Foswiki::Plugins::UploadPlugin::Core::handleUploadForm(@_);
 }
 
 ##############################################################################
 sub handleRestUpload {
-    init();
-    Foswiki::Plugins::UploadPlugin::Core::handleRestUpload(@_);
+  init();
+  Foswiki::Plugins::UploadPlugin::Core::handleRestUpload(@_);
 }
 
 ##############################################################################
 sub DISafterSaveHandler {
+  #my ( $text, $topic, $web, $meta ) = @_;
 
-    #my ( $text, $topic, $web, $meta ) = @_;
+  # only in save context
+  return unless Foswiki::Func::getContext()->{'save'};
 
-    # only in save context
-    return unless Foswiki::Func::getContext()->{'save'};
-
-    init();
-    Foswiki::Plugins::UploadPlugin::Core::afterSaveHandler(@_);
+  init();
+  Foswiki::Plugins::UploadPlugin::Core::afterSaveHandler(@_);
 }
 
 1;
